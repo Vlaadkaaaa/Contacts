@@ -9,7 +9,13 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private var contacts = [ContactProtocol]()
+    private var contacts: [ContactProtocol] = []{
+        didSet{
+            contacts.sort {$0.title < $1.title}
+        }
+    }
+    
+    @IBOutlet var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +31,43 @@ class ViewController: UIViewController {
             Contact(title: "Саня Техосмотр", phone: "+799912312323"))
         contacts.append(Contact(title: "Владимир Анатольевич", phone: "+781213342321"))
         contacts.append(Contact(title: "Сильвестр", phone: "+7000911112"))
-        contacts.sort{ $0.title < $1.title }
+    }
+    
+    //MARK: - Action
+        @IBAction func showNewContactAlert(){
+        //Создание AlertController
+            let alertController = UIAlertController(title: "Создайте новый контакт", message: "Введите имя и телефон", preferredStyle: .alert)
+            
+            //добавляем первое и второе текстовое поле в alertController
+            alertController.addTextField { textField in
+                textField.placeholder = "Введите имя"
+            }
+            alertController.addTextField { textField in
+                textField.placeholder = "Введите номер"
+            }
+            
+            //Создаем кнопки
+            //Создание кнопки добавления
+            let createButton = UIAlertAction(title: "Добавить", style: .default) { _ in
+                guard let contactName = alertController.textFields?[0].text, let contactPhone = alertController.textFields?[1].text else {return }
+                //Создаем новый контакт
+                let contact = Contact(title: contactName, phone: contactPhone)
+                self.contacts.append(contact)
+                self.tableView.reloadData()
+            }
+            //Создание кнопки отмены
+            let cancelButton = UIAlertAction(title: "Отмена", style: .cancel)
+            
+            //Добавляем кнопки в alertController
+            alertController.addAction(createButton)
+            alertController.addAction(cancelButton)
+            
+            
+            //Отображаем Alert
+            self.present(alertController, animated: true)
     }
 }
+
 
 //MARK: Extension
 

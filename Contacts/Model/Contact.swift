@@ -15,4 +15,5 @@ protocol ContactProtocol{
 struct Contact: ContactProtocol{
     var title: String
     var phone: String
+    
 }
