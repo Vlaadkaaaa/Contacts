@@ -8,18 +8,24 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+
+    var storage: ContactStorageProtocol!
+
     private var contacts: [ContactProtocol] = []{
         didSet{
             contacts.sort {$0.title < $1.title}
+            //сохранение контактов в хранилище
+            storage.save(contacts: contacts)
         }
     }
+
+
     
     @IBOutlet var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        storage = ContactStorage()
         loadContacts()
     }
     
@@ -27,10 +33,7 @@ class ViewController: UIViewController {
     //MARK: - Methods
     //Метод добавляет контакты в массив
     func loadContacts(){
-        contacts.append(
-            Contact(title: "Саня Техосмотр", phone: "+799912312323"))
-        contacts.append(Contact(title: "Владимир Анатольевич", phone: "+781213342321"))
-        contacts.append(Contact(title: "Сильвестр", phone: "+7000911112"))
+        contacts = storage.load()
     }
     
     //MARK: - Action
